@@ -1,0 +1,50 @@
+.click {
+    cursor: pointer;
+}
+
+body {
+    background-color: #f5f0f0;
+}
+
+.container-fluid {
+    padding:0;
+}
+.header-admin {
+    background-color: red;
+    margin:0;
+    width:100%;
+    min-height:60px;
+}
+.header-admin a {
+    color: white;
+    text-decoration: none;
+}
+.deader-admin-active {
+    font-size: 20px;
+}
+.footer-admin {
+    background-color: red;
+    margin:0;
+    width:100%;
+    min-height:100px;
+}
+.center-text {
+    text-align: center;
+    vertical-align: middle;
+}
+.row {
+    --bs-gutter-x: 0;
+}
+.card {
+  border-radius: 15px;
+}
+.custom-dropdown {
+    position: relative;
+}
+
+.custom-dropdown .dropdown-menu {
+    position: absolute;
+}
+.custom-dropdown:hover .dropdown-menu {
+    display: block;
+}

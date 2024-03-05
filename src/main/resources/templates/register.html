@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Đăng ký</title>
+
+    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon">
+</head>
+<body>
+<form style="width: 22rem;" th:action="@{/register}" th:object="${user}" method="post">
+    <div class="form-outline mb-4">
+        <input type="email" id="email" name="email" class="form-control" placeholder="Email" required="" autofocus="">
+        <label class="form-label sr-only">Email</label>
+        <p style="font-size:11px;" class="fst-italic text-center">Lưu ý: Vui lòng nhập email mà bạn có thể sử dụng để lấy lại mật khẩu!</p>
+    </div>
+    <div class="form-outline mb-4">
+        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Họ" required="" autofocus="">
+        <label class="form-label sr-only">Họ</label>
+    </div>
+    <div class="form-outline mb-4">
+        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Tên" required="" autofocus="">
+        <label class="form-label sr-only">Tên</label>
+    </div>
+
+    <div class="form-outline mb-4">
+        <input type="password" id="password" name="password" class="form-control" placeholder="Mật khẩu" required="">
+        <label class="form-label sr-only">Password</label>
+    </div>
+    <input name="_csrf" type="hidden" value="rOhFKOcqMyNawmIay1vO71aaohcKgr5oyGlMwjV9snw5tKHwlY18HdEbBxF38wR_-nb622Ssj3U449xFrlB49VQZhx4PhJiW">
+
+    <!-- 2 column grid layout for inline styling -->
+    <div class="row mb-4">
+        <div class="col d-flex justify-content-center">
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
