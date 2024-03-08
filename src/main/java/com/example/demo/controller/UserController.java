@@ -334,6 +334,7 @@ public class UserController {
             model.addAttribute("cartSize", cartService.getCartSize(userService.getUser().getId()));
         }
         model.addAttribute("user", user);
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("carts", cartService.viewCart(user.getId()));
         model.addAttribute("sum", cartService.sumPriceProductsInCart(user.getId()));
         model.addAttribute("addressList", receiptService.getUserAddresses(user.getId()));
@@ -394,6 +395,7 @@ public class UserController {
         }
         model.addAttribute("carts", carts);
         model.addAttribute("user", user);
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("sum", cartService.sumPriceProductsInCart(user.getId()));
         model.addAttribute("addressList", receiptService.getUserAddresses(user.getId()));
         model.addAttribute("addressDefault", addressDefault);
@@ -435,6 +437,7 @@ public class UserController {
             model.addAttribute("cartSize", cartService.getCartSize(userService.getUser().getId()));
         }
         model.addAttribute("user", userService.getUser());
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("receipts", receiptService.getReceiptOfUser(userService.getUser().getId()));
         return "receipt";
     }
