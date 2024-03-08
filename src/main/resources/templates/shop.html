@@ -31,10 +31,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <li class="nav-item" th:if="${user==null || user.roles[0].name=='ROLE_USER'}">
                     <a class="nav-link" aria-current="page" href="/receipt">Tra cứu đơn hàng</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" th:if="${user==null || user.roles[0].name=='ROLE_USER'}">
                     <a th:if="${user==null || cartSize == 0}" class="nav-link" href="/cart">Giỏ hàng</a>
                     <a th:if="${user!=null && cartSize > 0}" class="nav-link" href="/cart" th:text="'Giỏ hàng (' + ${cartSize} + ')'"></a>
                 </li>
