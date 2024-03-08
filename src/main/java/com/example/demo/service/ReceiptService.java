@@ -18,12 +18,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Service
 public class ReceiptService {
@@ -306,6 +306,7 @@ public class ReceiptService {
         receipt.setReceiptCode(receiptCode);
         receipt.setPaymentMethod(paymentMethod);
         receipt.setDayReceived(dayReceived);
+        receipt.setStatus("Đang giao hàng");
         receiptRepo.save(receipt);
     }
 
@@ -324,12 +325,27 @@ public class ReceiptService {
         }
         return receipt;
     }
+    public Receipt getOneReceiptOfUserAdmin (String receiptCode) {
+        return receiptRepo.findByReceiptCode(receiptCode).orElse(null);
+    }
 
     public Address getDefaultAddressInReceipt (Long userId, int index) {
         List<Receipt> receipts = receiptRepo.findByUserIdOrderByDateCreatedDateFormatDesc(userId);
         Receipt receipt = receipts.get(index);
         Address address = receipt.getAddress();
 
+        String province = this.getNameById(address.getProvince(),"province");
+        String district = this.getNameById(address.getDistrict(),"district");
+        String ward = this.getNameById(address.getWard(),"commune");
+        address.setProvince(province);
+        address.setDistrict(district);
+        address.setWard(ward);
+
+        return address;
+    }
+    public Address getDefaultAddressInReceiptAdmin (String receiptCode) {
+        Receipt receipt = receiptRepo.findByReceiptCode(receiptCode).orElse(null);
+        Address address = receipt.getAddress();
         String province = this.getNameById(address.getProvince(),"province");
         String district = this.getNameById(address.getDistrict(),"district");
         String ward = this.getNameById(address.getWard(),"commune");
@@ -351,4 +367,82 @@ public class ReceiptService {
         }
         return input;
     }
+    public void setStatusReceipt (Long id) {
+        Receipt receipt = receiptRepo.findById(id).orElse(null);
+        if (receipt!=null) {
+            receipt.setStatus("Đã nhận");
+            receiptRepo.save(receipt);
+        }
+    }
+    public List<Receipt> getAllReceipt () {
+        return receiptRepo.findAllByOrderByDateCreatedDateFormatDesc();
+    }
+
+    public List<Receipt> findReceiptsByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return receiptRepo.findByDateCreatedDateFormatBetween(startDate,endDate);
+    }
+
+    public Map<LocalDate, Double> getRevenueDataForLast7Days() {
+        Map<LocalDate, Double> revenueData = new LinkedHashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (int i = 4; i >= 0; i--) {
+            LocalDateTime startDate = now.minusDays(i).with(LocalTime.MIN);
+            LocalDateTime endDate = now.minusDays(i).with(LocalTime.MAX);
+            List<Receipt> receipts = findReceiptsByDate(startDate, endDate);
+            double totalRevenue = receipts.stream().mapToDouble(Receipt::getTotalPrice).sum();
+            revenueData.put(startDate.toLocalDate(), totalRevenue);
+        }
+        return revenueData;
+    }
+    public Map<LocalDate, Integer> getRevenueDataForLast7DaysOrders() {
+        Map<LocalDate, Integer> revenueData = new LinkedHashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (int i = 4; i >= 0; i--) {
+            LocalDateTime startDate = now.minusDays(i).with(LocalTime.MIN);
+            LocalDateTime endDate = now.minusDays(i).with(LocalTime.MAX);
+            List<Receipt> receipts = findReceiptsByDate(startDate, endDate);
+            Integer totalRevenue = receipts.size();
+            revenueData.put(startDate.toLocalDate(), totalRevenue);
+        }
+        return revenueData;
+    }
+    public double totalProfit () {
+        if (this.getAllReceipt().isEmpty()) return 0;
+        return this.getAllReceipt().stream().mapToDouble(Receipt::getTotalPrice).sum();
+    }
+    public int totalOrder () {
+        if (this.getAllReceipt().isEmpty()) return 0;
+        return this.getAllReceipt().size();
+    }
+
+    //Analytic by day
+    public Map<LocalDate, Double> getRevenueDataForDays(LocalDateTime startDate, LocalDateTime endDate) {
+        Map<LocalDate, Double> revenueData = new LinkedHashMap<>();
+        long numOfDaysBetween = ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
+
+        for (long i = 0; i <= numOfDaysBetween - 1; i++) {
+            LocalDateTime startOfDay = startDate.plusDays(i).with(LocalTime.MIN);
+            LocalDateTime endOfDay = startDate.plusDays(i).with(LocalTime.MAX);
+            List<Receipt> receipts = findReceiptsByDate(startOfDay, endOfDay);
+            double totalRevenue = receipts.stream().mapToDouble(Receipt::getTotalPrice).sum();
+            revenueData.put(startOfDay.toLocalDate(), totalRevenue);
+        }
+        return revenueData;
+    }
+    public Map<LocalDate, Integer> getRevenueDataForOrders(LocalDateTime startDate, LocalDateTime endDate) {
+        Map<LocalDate, Integer> revenueData = new LinkedHashMap<>();
+        long numOfDaysBetween = ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
+
+        for (long i = 0; i <= numOfDaysBetween - 1; i++) {
+            LocalDateTime startOfDay = startDate.plusDays(i).with(LocalTime.MIN);
+            LocalDateTime endOfDay = startDate.plusDays(i).with(LocalTime.MAX);
+            List<Receipt> receipts = findReceiptsByDate(startOfDay, endOfDay);
+            Integer totalRevenue = receipts.size();
+            revenueData.put(startOfDay.toLocalDate(), totalRevenue);
+        }
+        return revenueData;
+    }
+
 }

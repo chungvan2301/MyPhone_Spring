@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -17,8 +18,10 @@ public class Product {
     private double price;
     private String branch;
     @Column(nullable = true)
+    @ColumnDefault("null")
     private String type;
     @Column(nullable = true)
+    @ColumnDefault("null")
     private String color;
     private String description;
     private String imageName;

@@ -38,6 +38,16 @@ public class Receipt {
 
     private String dayReceived;
 
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }
@@ -134,7 +144,7 @@ public class Receipt {
         this.dayReceived = dayReceived;
     }
 
-    public Receipt(Long id, String dateCreated, LocalDateTime dateCreatedDateFormat, User user, Address address, List<Cart> cartsList, double goodsFee, double transportFee, double totalPrice, String receiptCode, String paymentMethod, String dayReceived) {
+    public Receipt(Long id, String dateCreated, LocalDateTime dateCreatedDateFormat, User user, Address address, List<Cart> cartsList, double goodsFee, double transportFee, double totalPrice, String receiptCode, String paymentMethod, String dayReceived, String status) {
         this.id = id;
         this.dateCreated = dateCreated;
         this.dateCreatedDateFormat = dateCreatedDateFormat;
@@ -147,6 +157,7 @@ public class Receipt {
         this.receiptCode = receiptCode;
         this.paymentMethod = paymentMethod;
         this.dayReceived = dayReceived;
+        this.status = status;
     }
 
     public Receipt() {

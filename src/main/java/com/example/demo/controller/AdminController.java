@@ -3,30 +3,44 @@ package com.example.demo.controller;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.model.Category;
 import com.example.demo.model.Product;
-import com.example.demo.service.CategoryService;
-import com.example.demo.service.ProductService;
-import com.example.demo.service.UploadImageService;
+import com.example.demo.model.Receipt;
+import com.example.demo.model.User;
+import com.example.demo.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
+
 @Controller
 public class AdminController {
+    @Autowired
+    UserService userService;
     @Autowired
     CategoryService categoryService;
     @Autowired
     ProductService productService;
     @Autowired
+    CartService cartService;
+    @Autowired
+    ReceiptService receiptService;
+    @Autowired
     UploadImageService uploadImageService;
     @GetMapping("/admin")
-    public String getAdminDashboard(){
+    public String getAdminDashboard(Model model){
+        model.addAttribute("user", userService.getUser());
         return "adminDashboard";
     }
     @GetMapping("/admin/category")
     public String getAdminCategory(Model model){
+        model.addAttribute("user", userService.getUser());
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("category", new Category());
         return "category";
@@ -45,12 +59,14 @@ public class AdminController {
 
     @GetMapping("/admin/product")
     public String getAdminProduct(Model model){
+        model.addAttribute("user", userService.getUser());
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("products", productService.getAllProduct());
         return "product";
     }
     @GetMapping("/admin/product/add")
     public String getAdminProductAdd(Model model){
+        model.addAttribute("user", userService.getUser());
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("productDTO", new ProductDTO());
         return "product-add";
@@ -81,9 +97,63 @@ public class AdminController {
         productDTO.setImageName(product.getImageName());
         productDTO.setQuantityAdd(product.getQuantityAdd());
 
+        model.addAttribute("user", userService.getUser());
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("productDTO",productDTO);
 
         return "product-add";
+    }
+
+    @GetMapping("/admin/receipt")
+    public String getAllReceiptOfUserPage (Model model) {
+        if (userService.getUser()!=null) {
+            model.addAttribute("cartSize", cartService.getCartSize(userService.getUser().getId()));
+        }
+        model.addAttribute("user", userService.getUser());
+        model.addAttribute("receipts", receiptService.getAllReceipt());
+        return "receipt-admin";
+    }
+    @GetMapping("/admin/receipt/{receiptCode}")
+    public String getOneReceipt (Model model, @PathVariable String receiptCode) {
+        User user = userService.getUser();
+
+        Receipt receipt = receiptService.getOneReceiptOfUserAdmin(receiptCode);
+        if (userService.getUser()!=null) {
+            model.addAttribute("cartSize", cartService.getCartSize(userService.getUser().getId()));
+        }
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("user", user);
+        model.addAttribute("receipt", receipt);
+        if (receipt==null) return "pageNotFound";
+        else {
+            model.addAttribute("addressDefault", receiptService.getDefaultAddressInReceiptAdmin(receiptCode));
+            return "receipt-admin-view-detail";
+        }
+    }
+
+    //Thống kê
+    @GetMapping("/admin/analytic")
+    public String getAnalytic (Model model) {
+        User user = userService.getUser();
+        model.addAttribute("revenueData", receiptService.getRevenueDataForLast7Days());
+        model.addAttribute("totalProfit", receiptService.totalProfit());
+        model.addAttribute("revenueDataOrder", receiptService.getRevenueDataForLast7DaysOrders());
+        model.addAttribute("totalOrder", receiptService.totalOrder());
+        model.addAttribute("user", user);
+        return "analytic";
+    }
+
+    @GetMapping("/admin/analytic/date")
+    public String getAnalyticDate (Model model, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        User user = userService.getUser();
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
+        model.addAttribute("revenueData", receiptService.getRevenueDataForDays(startDateTime,endDateTime));
+        model.addAttribute("totalProfit", receiptService.totalProfit());
+        model.addAttribute("revenueDataOrder", receiptService.getRevenueDataForOrders(startDateTime,endDateTime));
+        model.addAttribute("totalOrder", receiptService.totalOrder());
+        model.addAttribute("user", user);
+        return "analytic";
     }
 }

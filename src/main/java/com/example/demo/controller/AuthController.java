@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -61,6 +62,26 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             // Đăng nhập không thành công, reload lại trang "/login"
             System.out.println("Wrong password");
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassWord() {
+        return "forget-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String getNewPassWord(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        int result = userService.getNewPassword(email);
+        if (result==0) {
+            redirectAttributes.addFlashAttribute("message","wrong-email");
+            return "redirect:/forgetPassword";
+        } else if (result==2) {
+            redirectAttributes.addFlashAttribute("message","email-not-exist");
+            return "redirect:/forgetPassword";
+        } else {
+            redirectAttributes.addFlashAttribute("forgotpassword","success");
             return "redirect:/login";
         }
     }

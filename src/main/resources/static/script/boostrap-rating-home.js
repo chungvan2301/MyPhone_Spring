@@ -245,3 +245,5 @@
     $('input.rating').rating();
   });
 }(jQuery));
+
+

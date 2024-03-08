@@ -43,8 +43,10 @@ public class ProductService {
         product.setName(productDTO.getName());
         product.setCategory(categoryRepo.findById(productDTO.getCategoryId()).orElse(null));
         product.setBranch(productDTO.getBranch());
-        product.setType(productDTO.getType());
-        product.setColor(productDTO.getColor());
+        if (productDTO.getType().isEmpty()) {product.setType(null);}
+            else {product.setType(productDTO.getType());}
+        if (productDTO.getColor().isEmpty()) {product.setColor(null);}
+            else {product.setColor(productDTO.getColor());}
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setAddDate(LocalDateTime.now());
@@ -73,16 +75,15 @@ public class ProductService {
     public List<String> getProductByColor(Long id) {
         String name = productRepo.findById(id).orElse(null).getName();;
         List<String> colors = productRepo.findDistinctColorByName(name);
-        System.out.println(colors.size());
-        if (colors.get(0) ==null) {
+        if (colors.get(0) == null) {
+            System.out.println(colors.size());
             return Collections.emptyList();
         } else return colors;
     }
     public List<String> getProductByType(Long id) {
         String name = productRepo.findById(id).orElse(null).getName();
         List<String> types = productRepo.findDistinctTypeByName(name);
-        System.out.println(types.size());
-        if (types.get(0) ==null) {
+        if (types.get(0) == null) {
             return Collections.emptyList();
         } else return types;
     }

@@ -73,16 +73,32 @@ public class UserController {
         }
         return "home";
     }
-
+    @GetMapping("/contact")
+    public String getContactPage(Model model){
+        model.addAttribute("user", userService.getUser());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "contact";
+    }
+    @PostMapping("/contact")
+    public String sendUserMessage (@RequestParam String email, @RequestParam String message, RedirectAttributes redirectAttributes) {
+        userService.sendEmailToShop(email,message);
+        redirectAttributes.addFlashAttribute("success","success");
+        return "redirect:/contact";
+    }
     @GetMapping("/register")
     public String registerPage(){
         return "register";
     }
-
     @PostMapping("/register")
-    public String addNewUser(@ModelAttribute("user") User user){
-        if (userService.addNewUser(user)) return "redirect:/login";
-        else return "redirect:/register";
+    public String addNewUser(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes){
+        if (userService.addNewUser(user)) {
+            redirectAttributes.addFlashAttribute("message", "successRegister");
+            return "redirect:/login";
+        }
+        else {
+            redirectAttributes.addFlashAttribute("message", "failRegister");
+            return "redirect:/register";
+        }
     }
 
     //Product page
@@ -426,18 +442,25 @@ public class UserController {
     @GetMapping("/receipt/{index}")
     public String getOneReceipt (HttpServletRequest request, Model model, @PathVariable int index) {
         User user = userService.getUser();
+
         Receipt receipt = receiptService.getOneReceiptOfUser(user.getId(),index);
         if (userService.getUser()!=null) {
             model.addAttribute("cartSize", cartService.getCartSize(userService.getUser().getId()));
         }
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("user", user);
         model.addAttribute("receipt", receipt);
+        model.addAttribute("index", index);
         if (receipt==null) return "pageNotFound";
         else {
             model.addAttribute("addressDefault", receiptService.getDefaultAddressInReceipt(user.getId(),index));
-            return "viewReceipt";
+            return "receipt-view-detail";
         }
     }
-
+    @PostMapping("/receipt/set-status")
+    public String setReceiptStatus(@RequestParam Long id, @RequestParam int index) {
+        receiptService.setStatusReceipt(id);
+        return "redirect:/receipt/" + index;
+    }
 }
 

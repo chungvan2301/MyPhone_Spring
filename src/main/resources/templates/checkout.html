@@ -53,6 +53,9 @@
         .selected {
             border-color: blue;
         }
+        h2 {
+            font-size:20px;
+        }
     </style>
 </head>
 <body>
@@ -105,18 +108,18 @@
 </div>
 
 <div class="container">
-    <div class="container row justify-content-between">
+    <div class="d-flex justify-content-between mt-3 mb-5">
         <h1> Thanh toán</h1>
         <div>
             <p class="font-weight-bolder mb-2">Mã đơn hàng:</p>
-            <p style="right:0;" class="font-weight-bolder" th:text="${receiptCode}">Mã đơn hàng</p>
+            <p style="right:0;" class="font-weight-bolder text-center" th:text="${receiptCode}">Mã đơn hàng</p>
         </div>
     </div>
 
 
     <div class="container border border border-4 rounded mt-mb-3">
-        <div class="row justify-content-between">
-            <h2 class="mt-2 ml-3"><i class="fa fa-solid fa-address-card" style="color: red;"></i> Địa chỉ nhận hàng</h2>
+        <div class="d-flex justify-content-between mt-2">
+            <h2><i class="fa fa-solid fa-address-card" style="color: red;"></i> Địa chỉ nhận hàng</h2>
             <button type="button" class="btn btn-primary btn-sm"><a style="color: white;" class="text-decoration-none" href="/thanhtoan/diachi">Cập nhật địa chỉ</a></button>
         </div>
         <div>
@@ -153,16 +156,16 @@
         </div>
     </div>
 
-    <div class="container border border border-4 rounded mt-mb-3">
-        <div class="row justify-content-between">
-            <h2 class="mt-2 ml-3"><i class="fa fa-solid fa-truck" style="color: red;"></i> Đơn vị vận chuyển</h2>
+    <div class="container border border border-4 rounded mt-3 mb-3">
+        <div class="d-flex justify-content-between mt-2">
+            <h2><i class="fa fa-solid fa-truck" style="color: red;"></i> Đơn vị vận chuyển</h2>
             <button id="shippingButton" type="button" style="text-color: blue;" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ShippingModal" onclick="selectCard(0)">Chọn đơn vị vận chuyển</button>
             <div class="modal fade" id="ShippingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Chọn đơn vị vận chuyển</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -170,14 +173,14 @@
                             <form id="cardForm" method="post" th:action="@{/thanhtoan/setShipping}">
                                 <div class="card" onclick="selectCard(0)">
                                     <div class="img-container position-relative">
-                                        <img class="mr-3" src="/images/spe.png" alt="Logo" width="100" height="75">
+                                        <img style="margin-right:1rem;" src="/images/spe.png" alt="Logo" width="100" height="75">
                                         <span style="top:0; max-width:200px; max-heigt:30px; position:absolute; font-weight: bolder;" th:text="${#numbers.formatDecimal(shippingFee[0],1, 'COMMA', 0, 'DEFAULT')} + ' đồng'">Shopee Express</span>
                                         <span style="bottom:0;max-width:200px; max-heigt:30px;position:absolute;" th:text="'Nhận hàng vào ngày '+${dayShipping[0]} + ' đến ngày ' + ${dayShipping[1]}">Nhận hàng vào</span>
                                     </div>
                                 </div>
                                 <div class="card" onclick="selectCard(1)">
                                     <div class="img-container position-relative">
-                                        <img class="mr-3" src="/images/ghtk.jpg" alt="Logo" width="100" height="75">
+                                        <img style="margin-right:1rem;" src="/images/ghtk.jpg" alt="Logo" width="100" height="75">
                                         <span style="top:0; max-width:200px; max-heigt:30px; position:absolute; font-weight: bolder;"  th:text="${#numbers.formatDecimal(shippingFee[1],1, 'COMMA', 0, 'DEFAULT')} + ' đồng'">Giao hàng tiết kiệm</span>
                                         <span style="bottom:0;max-width:200px; max-heigt:30px;position:absolute;" th:text="'Nhận hàng dự kiến '+ ${dayShipping[2]} + ' đến ngày ' + ${dayShipping[3]}">Nhận hàng vào</span>
                                     </div>
@@ -186,7 +189,7 @@
                                 <input type="hidden" name="userId" th:value="${user.id}">
                                 <div class="modal-footer d-flex">
                                     <button type="submit" class="btn btn-primary">Xác nhận</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -207,10 +210,10 @@
         </div>
     </div>
 
-    <div id="payment" class="container border border border-4 rounded mt-3 position-relative">
-        <div class="row justify-content-between">
-            <h2 class="mt-2 ml-3"><i class="fa fa-solid fa-receipt" style="color: red;"></i> Phương thức thanh toán</h2>
-            <div class="row justify-content-between mt-2 mb-2 mr-3">
+    <div id="payment" class="container border border-4 rounded mt-3 position-relative">
+        <div class="d-flex justify-content-between mt-2">
+            <h2><i class="fa fa-solid fa-receipt" style="color: red;"></i> Phương thức thanh toán</h2>
+            <div class="d-flex justify-content-around">
                 <div onclick="selectPaymentMethod(0)" style="min-height:40px; padding:5px;" class="selection border border-primary border-4 rounded">
                     Thanh toán khi nhận hàng
                 </div>
@@ -219,10 +222,8 @@
                 </div>
             </div>
         </div>
+            <img id="img-QRCode" style="visibility: hidden;position:absolute;right:0;margin-right:2rem;margin-top:1rem;" src="/images/maQR.png" alt="Logo" width="320" height="160">
 
-        <div class="mt-3 mb-3">
-            <img id="img-QRCode" style="right:0; bottom:0; visibility: hidden;" class="mr-3 mb-3 position-absolute" src="/images/maQR.png" alt="Logo" width="320" height="160">
-        </div>
     </div>
 
     <form class="mt-3 d-flex flex-column justify-content-between" th:action="@{/thanhtoan/receipt}" method="post">
@@ -251,12 +252,6 @@
         <button id="buttonOrder" style="max-width:200px;" type="submit" class="btn btn-danger btn-lg ms-auto" disabled title="Vui lòng chọn đầy đủ thông tin">Đặt hàng</button>
     </form>
 </div>
-
-<form th:action="@{/api/v1/create-order}" method="post" th:object="${orderRequestDTO}">
-    <input type="hidden" id="amount" name="amount" th:field="*{amount}">
-    <input type="hidden" id="orderInfo" name="orderInfo" th:field="*{orderInfo}" th:value="'Thanh toán hóa đơn '+${receiptCode}">
-    <button type="submit">Gửi</button>
-</form>
 
 <div class="container-fluid" style="margin-top:10%;">
     <div class="row d-flex align-items-center justify-content-between footer-admin">

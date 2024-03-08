@@ -23,12 +23,8 @@ function selectCard(cardNumber) {
 
 //Hide shipping button
 document.addEventListener("DOMContentLoaded", function() {
-
-    var textDayReceived = document.getElementById("dayReceivedSelected").innerText;
-    document.getElementById("dayReceived").value = textDayReceived;
-
     var feeGoodsValue = document.getElementById("feeGoods").innerText;
-    var feeShippingValue = document.getElementById("feeShipping").innerText;transportFeeSelected
+    var feeShippingValue = document.getElementById("feeShipping").innerText;
     var totalFee = parseFloat(feeGoodsValue.replace(/\D/g, '')) + parseFloat(feeShippingValue.replace(/\D/g, ''));
     document.getElementById("feeTotal").innerText = totalFee.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 
@@ -46,16 +42,12 @@ document.addEventListener("DOMContentLoaded", function() {
     transportFee.value = parseFloat(feeShippingValue.replace(/\D/g, ''));
     totalPrice.value = totalFee;
 
-    var amount = document.getElementById("amount");
-    amount.value = totalFee;
     var receiptCode = document.getElementById("receiptCode");
-    var orderInfo = document.getElementById("orderInfo");
-    orderInfo.value = "Thanh toán hóa đơn " + receiptCode.value;
-
+    updateOrderButton();
     formatCurrency("feeGoods");
     formatCurrency("feeShipping");
 
-    updateOrderButton();
+
 })
 
 //Select method payment
@@ -105,8 +97,12 @@ function formatCurrency(elementId) {
     }
 
 function updateOrderButton () {
+    if (document.getElementById("dayReceivedSelected")!=null) {
+        var textDayReceived = document.getElementById("dayReceivedSelected").innerText;
+        document.getElementById("dayReceived").value = textDayReceived;
+    }
     var feeGoods = document.getElementById("feeGoods").innerText;
-    var feeShipping = document.getElementById("feeShipping").innerText;
+    var feeShipping = document.getElementById("transportFee").value;
     var buttonOrder = document.getElementById("buttonOrder");
 
     if (feeGoods !== "0" && feeShipping !== "0") {

@@ -16,7 +16,7 @@
         hideMethod: "fadeOut"
     };
 
-    var msg = document.getElementById('sucessfullPaid').value;
+    var msg = document.getElementById("sucessfullPaid").value;
 
     if (msg === "sucessfullPaid") {
         toastr.success("Thanh toán thành công");
