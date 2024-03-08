@@ -95,8 +95,8 @@ public class SecurityConfig {
 
     private ClientRegistration googleClientRegistration() {
         return ClientRegistration.withRegistrationId("google")
-                .clientId("276595885691-l8vou736ledl1bk65ri7pmmjd5p2m0i0.apps.googleusercontent.com")
-                .clientSecret("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")
+                .clientId("")
+                .clientSecret("")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("https://myphone-fc5cdee4ec17.herokuapp.com/login/oauth2/code/google")
